@@ -1,65 +1,58 @@
-CGI::Wiki::FormaUtsteerr:C:oPnotdr(i3b)uted Perl DCoGcIu:m:eWnitkait:i:oFnormatter::Pod(3)
+NAME
+    CGI::Wiki::Formatter::Pod - A Pod to HTML formatter for CGI::Wiki.
 
+DESCRIPTION
+    A Pod to HTML formatter backend for CGI::Wiki.
 
+SYNOPSIS
+      my $store     = CGI::Wiki::Store::SQLite->new( ... );
+      my $formatter = CGI::Wiki::Formatter::Pod->new;
+      my $wiki      = CGI::Wiki->new( store     => $store,
+                                      formatter => $formatter );
 
-NNAAMMEE
-       CGI::Wiki::Formatter::Pod - A Pod to HTML formatter for
-       CGI::Wiki.
+    Go look at CGI::Wiki to find out more. This module is distributed
+    separately solely for convenience of testing and maintenance; it's
+    probably not too useful on its own.
 
-DDEESSCCRRIIPPTTIIOONN
-       A Pod to HTML formatter backend for CGI::Wiki.
+METHODS
+    new
+          my $formatter = CGI::Wiki::Formatter::Pod->new(
+                               node_prefix           => 'wiki.cgi?node=',
+                               usemod_extended_links => 0,
+          );
 
-SSYYNNOOPPSSIISS
-         my $store     = CGI::Wiki::Store::SQLite->new( ... );
-         my $formatter = CGI::Wiki::Formatter::Pod->new;
-         my $wiki      = CGI::Wiki->new( store     => $store,
-                                         formatter => $formatter );
+        "node_prefix" is optional and defaults to the value shown above.
 
-       Go look at CGI::Wiki to find out more. This module is dis-
-       tributed separately solely for convenience of testing and
-       maintenance; it's probably not too useful on its own.
+        If "usemod_extended_links" is supplied and true, then
+        UseModWiki-style extended links "[[like this]]" will be supported -
+        ie
 
-MMEETTHHOODDSS
-       nneeww
-             my $formatter = CGI::Wiki::Formatter::Pod->new(
-                                  node_prefix           => 'wiki.cgi?node=',
-                                  usemod_extended_links => 0,
-             );
+          [[foo bar]]
 
-           "node_prefix" is optional and defaults to the value
-           shown above.
+        will be translated into a link to the node named "Foo Bar". (Node
+        names are forced to ucfirst, ie first letter of each word is
+        capitalised.)
 
-           If "usemod_extended_links" is supplied and true, then
-           UseModWiki-style extended links "[[like this]]" will
-           be supported - ie
+        Note: You must have CGI::Wiki::Formatter::UseMod installed if you
+        wish to use the "usemod_extended_links" parameter.
 
-             [[foo bar]]
+    format
+          my $html = $formatter->format( $content );
 
-           will be translated into a link to the node named "Foo
-           Bar".  (Node names are forced to ucfirst, ie first
-           letter of each word is capitalised.)
+        Uses Pod::Tree::HTML to translate the pod supplied in $content into
+        HTML. Links will be treated as links to other wiki pages.
 
-       ffoorrmmaatt
-             my $html = $formatter->format( $content );
+SEE ALSO
+        CGI::Wiki, Pod::Tree::HTML.
 
-           Uses Pod::Tree::HTML to translate the pod supplied in
-           $content into HTML.  Links will be treated as links to
-           other wiki pages.
+AUTHOR
+        Kake Pugh (kake@earth.li), idea stolen from Matt Sergeant. Many
+        thanks to Steven W McDougall for extending the capabilities of
+        Pod::Tree::HTML so I could make this work.
 
-SSEEEE AALLSSOO
-       CGI::Wiki, Pod::Tree::HTML.
+COPYRIGHT
+             Copyright (C) 2003 Kake Pugh.  All Rights Reserved.
 
-AAUUTTHHOORR
-       Kake Pugh (kake@earth.li), idea stolen from Matt Sergeant.
-       Many thanks to Steven W McDougall for extending the capa-
-       bilities of Pod::Tree::HTML so I could make this work.
+        This module is free software; you can redistribute it and/or modify
+        it under the same terms as Perl itself.
 
-CCOOPPYYRRIIGGHHTT
-            Copyright (C) 2003 Kake Pugh.  All Rights Reserved.
-
-       This module is free software; you can redistribute it
-       and/or modify it under the same terms as Perl itself.
-
-
-
-perl v5.8.0                 2003-10-12CGI::Wiki::Formatter::Pod(3)

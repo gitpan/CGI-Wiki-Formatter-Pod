@@ -3,7 +3,7 @@ package CGI::Wiki::Formatter::Pod;
 use strict;
 
 use vars qw( $VERSION );
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use IO::Scalar;
 use Pod::Tree::HTML;
@@ -47,6 +47,9 @@ extended links C<[[like this]]> will be supported - ie
 
 will be translated into a link to the node named "Foo Bar".  (Node
 names are forced to ucfirst, ie first letter of each word is capitalised.)
+
+B<Note:> You must have L<CGI::Wiki::Formatter::UseMod> installed if
+you wish to use the C<usemod_extended_links> parameter.
 
 =cut
 
