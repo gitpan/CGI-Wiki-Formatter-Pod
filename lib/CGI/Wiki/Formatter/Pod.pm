@@ -3,7 +3,7 @@ package CGI::Wiki::Formatter::Pod;
 use strict;
 
 use vars qw( $VERSION );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use IO::Scalar;
 use Pod::Tree::HTML;
@@ -34,10 +34,19 @@ probably not too useful on its own.
 =item B<new>
 
   my $formatter = CGI::Wiki::Formatter::Pod->new(
-                       node_prefix => 'wiki.cgi?node=' );
+                       node_prefix           => 'wiki.cgi?node=',
+                       usemod_extended_links => 0,
+  );
 
-Takes one optional parameter, C<node_prefix>, which defaults to the
-value shown above.
+C<node_prefix> is optional and defaults to the value shown above.
+
+If C<usemod_extended_links> is supplied and true, then UseModWiki-style
+extended links C<[[like this]]> will be supported - ie
+
+  [[foo bar]]
+
+will be translated into a link to the node named "Foo Bar".  (Node
+names are forced to ucfirst, ie first letter of each word is capitalised.)
 
 =cut
 
@@ -47,6 +56,7 @@ sub new {
     bless $self, $class;
     my $node_prefix = $args{node_prefix} || "wiki.cgi?node=";
     $self->{_node_prefix} = $node_prefix;
+    $self->{_usemod_extended_links} = $args{usemod_extended_links} || 0;
     my $link_mapper = CGI::Wiki::Formatter::Pod::LinkMapper->new(
                                                node_prefix => $node_prefix );
     $self->{_link_mapper} = $link_mapper;
@@ -73,7 +83,27 @@ sub format {
     $html->translate;
     $formatted =~ s/^.*<BODY[^>]*>//s;
     $formatted =~ s|</BODY>.*$||s;
+    if ( $self->{_usemod_extended_links} ) {
+        # Create link from [[foo bar]].
+        $formatted =~ s/(\[\[[^\]]+\]\])/$self->_linkify($1)/egs;
+    }
     return $formatted;
+}
+
+sub _linkify {
+    my ($self, $node) = @_;
+    require CGI::Wiki::Formatter::UseMod;
+    my $formatter = CGI::Wiki::Formatter::UseMod->new(
+        implicit_links => 0,
+        extended_links => 1,
+        node_prefix    => $self->{_node_prefix},
+    );
+    my $snippet = $formatter->format($1);
+    # Snippet will be created as a paragraph, which we don't want as we're
+    # inlining this.
+    $snippet =~ s/^<p>//s;
+    $snippet =~ s/<\/p>$//s;
+    return $snippet;
 }
 
 =head1 SEE ALSO
