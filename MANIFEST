@@ -1,0 +1,7 @@
+MANIFEST
+Makefile.PL
+README
+TODO
+lib/CGI/Wiki/Formatter/Pod.pm
+t/01_formatting.t
+
